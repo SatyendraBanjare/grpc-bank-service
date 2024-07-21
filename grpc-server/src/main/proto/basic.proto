@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.satyendra.grpc_server.protomodels";
+
+service bankService {
+  //unary
+  rpc addUser(addUsrMsg) returns (accNumMsg) {}
+  rpc getAllAccounts(Empty) returns (allAccountsRes);
+
+  // ---- Add
+  // unary
+  rpc addMoney(addMoneyMsg) returns (accStateMsg) {}
+  // client stream
+  rpc addMoneyStream (stream addMoneyMsg) returns (accStateMsg) {}
+
+  // ---- Withdraw
+  // unary
+  rpc withdrawUnary(withdrawUnaryReqMsg) returns (withdrawUnaryResMsg) {}
+  // server stream
+  rpc withdrawServerStream(withdrawStreamReqMsg) returns (stream withdrawUnaryResMsg) {}
+
+  // Bi-directional Stream
+  rpc transferMoney(stream transferMoneyReqMsg) returns (stream transferMoneyResMsg) {}
+}
+
+message Empty {}
+
+// Initialize
+message addUsrMsg {
+  string name = 3;
+  int32 startBalance = 1;
+}
+
+message accNumMsg {
+  string name = 1;
+  int32 account = 2;
+}
+
+message allAccountsRes {
+  repeated accStateMsg accounts = 1;
+}
+
+// Add
+message addMoneyMsg {
+  int32 account = 1;
+  int32 money =2;
+}
+
+message accStateMsg {
+  int32 account = 1;
+  int32 balance = 2;
+}
+
+// Withdraw
+message withdrawUnaryReqMsg {
+  int32 account = 1;
+  int32 money = 2;
+}
+
+message withdrawUnaryResMsg {
+  int32 account = 1;
+  int32 balance =2;
+}
+
+message withdrawStreamReqMsg {
+  int32 account = 1;
+  int32 money = 2;
+  int32 denomination = 3;
+}
+
+// Bi-directional stream
+
+message transferMoneyReqMsg {
+  int32 fromAccount = 1 ;
+  int32 toAccount = 2;
+  int32 amount = 3;
+}
+
+message transferMoneyResMsg {
+  int32 sentTo = 1;
+  int32 from =4;
+  int32 amount = 2;
+  int32 remainingBalance = 3;
+}
